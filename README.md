@@ -26,16 +26,17 @@ path to the day's transactions CSV.
 $ bin/run.rb <path to CSV>
 ```
 
-The application with return the current daily balances to the command line.
+The application with return the daily openning and closing balances of each account to the command line.
 
 ```
-Current Account Ledger
-----------------------
-1111234522226789  |    $720.50
-1111234522221234  |   $9974.40
-2222123433331212  |   $1550.00
-1212343433335665  |   $1225.60
-3212343433335755  |  $48679.50
+Daily Openning and Closing
+--------------------------
+Account           |   Openning |    Closing
+1111234522226789  |   $5000.00 |   $4820.50
+1111234522221234  |  $10000.00 |   $9974.40
+2222123433331212  |    $550.00 |   $1550.00
+1212343433335665  |   $1200.00 |   $1725.60
+3212343433335755  |  $50000.00 |  $48679.50
 ```
 
 ## Assumptions
@@ -48,16 +49,19 @@ was not possible to execute the transaction due to insufficient funds.
 
 ### CSV Data
 
-The provided CSV have no header information. 
+The provided CSV's have no header information and the following column indexes
+have been used. 
 
 Account columns:
-[0] - Account Number
-[1] - Openning Balance
+
+- [0] - Account Number
+- [1] - Openning Balance
 
 Transaction columns:
-[0] - from account
-[1] - to account
-[2] - amount
+
+- [0] - from account
+- [1] - to account
+- [2] - amount
 
 ## Testing
 
