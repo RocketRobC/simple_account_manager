@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
+require 'account_manager'
+
+daily_transactions = ARGV[0]
+account_balances = DATA_PATH + '/acc_balance.csv'
+
+view = AccountManager::CmdView.new
+app = AccountManager::App.new(
+  transaction_data: daily_transactions,
+  account_balances: account_balances,
+  view: view
+)
+
+app.run
