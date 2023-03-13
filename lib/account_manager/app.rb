@@ -6,17 +6,23 @@ module AccountManager
       @transaction_data = transaction_data
       @account_balances = account_balances
       @view = view
+      @errors = []
     end
 
     def run
       openning_balances = create_openning_accounts
       closing_balances = process_transactions(copy_accounts(openning_balances))
-      view.render_openning_closing(openning_balances, closing_balances)
+      if errors.empty?
+        view.render_openning_closing(openning_balances, closing_balances)
+      else
+        view.render_with_errors(errors, openning_balances, closing_balances)
+      end
     end
 
     private
 
     attr_reader :transaction_data, :account_balances, :view
+    attr_accessor :errors
 
     def create_openning_accounts
       accounts = CustomersAccounts.new
@@ -26,8 +32,8 @@ module AccountManager
           balance: row[1]
         )
         accounts.add_account(new_account)
-      rescue => e
-        view.render_error(e)
+      rescue AccountValidationError => e
+        errors << e
       end
       accounts
     end
@@ -35,13 +41,13 @@ module AccountManager
     def process_transactions(balances)
       CSV.foreach(transaction_data) do |row|
         transaction = Transaction.new(
-          from_account: balances.find(row[0]),
-          to_account: balances.find(row[1]),
+          source_account: balances.find(row[0]),
+          target_account: balances.find(row[1]),
           amount: row[2]
         )
         Transactor.call(transaction)
-      rescue => e
-        view.render_error(e)
+      rescue AccountLookupError, FundsError => e
+        errors << e
       end
       balances
     end

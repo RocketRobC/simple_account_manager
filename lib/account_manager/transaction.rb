@@ -1,10 +1,10 @@
 module AccountManager
   class Transaction
-    attr_reader :from_account, :to_account, :amount
+    attr_reader :source_account, :target_account, :amount
 
-    def initialize(from_account:, to_account:, amount:)
-      @from_account = from_account
-      @to_account = to_account
+    def initialize(source_account:, target_account:, amount:)
+      @source_account = source_account
+      @target_account = target_account
       @amount = Float(amount)
     end
   end

@@ -8,7 +8,9 @@ module AccountManager
     end
 
     def credit(amount)
-      self.balance += amount
+      if balance + amount > 0
+        self.balance += amount
+      end
     end
 
     def debit(amount)

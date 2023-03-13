@@ -9,14 +9,18 @@ module AccountManager
     end
 
     def call
-      if transaction.from_account.debit(transaction.amount)
-        transaction.to_account.credit(transaction.amount)
-      else
-        raise FundsError, "Insufficient funds. " +
-          "From Acc: #{transaction.from_account.account_number}. " +
-          "To Acc: #{transaction.to_account.account_number}. " +
-          "Amount Requested: $%.2f" % transaction.amount
-      end
+      (transaction.source_account.debit(transaction.amount) &&
+          transaction.target_account.credit(transaction.amount)) ||
+            raise_insufficient_funds
+    end
+
+    private
+
+    def raise_insufficient_funds
+      raise FundsError, "Insufficient funds. " +
+        "From Acc: #{transaction.source_account.account_number}. " +
+        "To Acc: #{transaction.target_account.account_number}. " +
+        "Amount Requested: $%.2f" % transaction.amount
     end
   end
 end

@@ -1,7 +1,10 @@
 module AccountManager
   class CmdView
-    def render_error(error)
-      puts error.message
+    def render_with_errors(errors, opening, closing)
+      puts 'Completed with Errors:'
+      errors.each { |e| puts e.message }
+      puts "\n"
+      render_openning_closing(opening, closing)
     end
 
     def render_openning_closing(openning, closing)

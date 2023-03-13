@@ -2,12 +2,12 @@ require 'spec_helper'
 
 module AccountManager
   describe Transactor do
-    let(:from_account) { CustomerAccount.new(account_number: '123', balance: '50') }
-    let(:to_account) { CustomerAccount.new(account_number: '345', balance: '100') }
+    let(:source_account) { CustomerAccount.new(account_number: '123', balance: '50') }
+    let(:target_account) { CustomerAccount.new(account_number: '345', balance: '100') }
     let(:transaction) do
       Transaction.new(
-        from_account: from_account,
-        to_account: to_account,
+        source_account: source_account,
+        target_account: target_account,
         amount: amount
       )
     end
@@ -16,14 +16,22 @@ module AccountManager
     subject { Transactor.new(transaction) }
 
     it 'transfers funds' do
-      expect { subject.call }.to change { from_account.balance }.from(50).to(40).
-        and change { to_account.balance }.from(100).to(110)
+      expect { subject.call }.to change { source_account.balance }.from(50).to(40).
+        and change { target_account.balance }.from(100).to(110)
     end
 
     context 'with insufficient debit funds' do
-      let(:from_account) { CustomerAccount.new(account_number: '123', balance: '9') }
+      let(:source_account) { CustomerAccount.new(account_number: '123', balance: '9') }
 
       it 'raises an error' do
+        expect { subject.call }.to raise_error FundsError
+      end
+    end
+
+    context 'when crediting a negaitve amount' do
+      let(:amount) { -101 }
+
+      it 'raises an error if the account fall below 0' do
         expect { subject.call }.to raise_error FundsError
       end
     end

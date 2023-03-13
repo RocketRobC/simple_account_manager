@@ -7,7 +7,7 @@ day companies provide you with a CSV file of transfers they want to make between
 accounts for customers they are doing business with. 
 
 Accounts are identified by a 16 digit number and **money cannot be transferred
-from then if it will put the account balance below $0**.
+from them if it will put the account balance below $0**.
 
 This application loads a list of account balances for a single company and
 accepts a day's transfers as a CSV file returning the new account balances for
@@ -23,7 +23,7 @@ The application can be run from the command line and accepts one argument of the
 path to the day's transactions CSV.
 
 ```
-$ bin/run.rb <path to CSV>
+$ bin/run <path to CSV>
 ```
 
 The application with return the daily openning and closing balances of each account to the command line.
@@ -43,9 +43,18 @@ Account           |   Openning |    Closing
 
 ### Transactions
 
-The provided list of transactions are processed sequentially and if a
+The provided list of transactions are intended to be processed sequentially and if a
 transactions is not able to be performed, it's because at that point in time it
-was not possible to execute the transaction due to insufficient funds.
+was not possible to execute the transaction due to an error.
+
+If a single transaction is not able to be performed because of insufficient funds or
+the source or target accounts do not exist, then the remaining transactions will continue to be
+processed. In this case the errors will be shown along with the openning and
+closing balance for the transactions that were executed.
+
+If the entered transaction amount is a negative value the transaction will
+be processed. However if the target account balance would drop below $0 as a result of
+the transaction, it won't be completed and an error an will be returned.
 
 ### CSV Data
 
@@ -59,8 +68,8 @@ Account columns:
 
 Transaction columns:
 
-- [0] - from account
-- [1] - to account
+- [0] - source account
+- [1] - target account
 - [2] - amount
 
 ## Testing
